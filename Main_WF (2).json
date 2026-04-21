@@ -1,0 +1,2967 @@
+{
+  "name": "Main-WF",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://bot-api.zapps.me/bot1087819310551228737:RowcgFQhqoagqOAMiSgBwsJqTWkmdSLkwRnVdtKRZzJtSWNvsixBprqLBIuBPbUV/setWebhook",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://ai-agent.nocoai.vn/webhook-test/38fd75f8-aee8-4b8d-8807-a4adfa58f563"
+            },
+            {
+              "name": "secret_token",
+              "value": "18022005"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1020,
+        -520
+      ],
+      "id": "f5870663-ae3a-4f24-a002-c1101a2a9311",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').item.json.body.message.message_id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        1500,
+        -640
+      ],
+      "id": "16b66a64-74d4-4532-9e82-5b27e21e11d8",
+      "name": "Postgres Chat Memory1",
+      "credentials": {
+        "postgres": {
+          "id": "DFtOwevrEvcAuWHb",
+          "name": "Postgres account 27"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-embedding-001"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        -440
+      ],
+      "id": "68b5dcaf-3b0d-4d2c-8f3d-26d22d2097d6",
+      "name": "Embeddings Google Gemini2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "TJkLoklL8nSivKC7",
+          "name": "Google Gemini(PaLM) Api account 74"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "Supply_Chain_Data",
+        "toolDescription": "=Sử dụng này để lấy dữ liệu\n{{ $('Google Sheets4').item.json.Questions }}",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.1,
+      "position": [
+        1640,
+        -580
+      ],
+      "id": "10ecec1b-2d56-4d00-bd9c-0905f671f4ab",
+      "name": "Supabase Vector Store2",
+      "credentials": {
+        "supabaseApi": {
+          "id": "oxMExWx9qNK1IuWt",
+          "name": "Supabase account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://bot-api.zapps.me/bot1087819310551228737:RowcgFQhqoagqOAMiSgBwsJqTWkmdSLkwRnVdtKRZzJtSWNvsixBprqLBIuBPbUV/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "={{ $('Webhook').item.json.body.message.chat.id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.Answers }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2080,
+        -920
+      ],
+      "id": "cf50d4f7-ce35-4931-9ab0-dd9129345da8",
+      "name": "HTTP Request5"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        -680
+      ],
+      "id": "1ad987c8-9f86-4647-8721-18e0bcea42f9",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "0RVwycsAs9IMCfRS",
+          "name": "Google Gemini(PaLM) Api account 99"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "38fd75f8-aee8-4b8d-8807-a4adfa58f563",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        780,
+        -920
+      ],
+      "id": "dcf282de-7a34-4aba-9dc9-bef4ec1a4098",
+      "name": "Webhook",
+      "webhookId": "38fd75f8-aee8-4b8d-8807-a4adfa58f563"
+    },
+    {
+      "parameters": {
+        "content": "Chat bot truy vấn dữ liệu (supply chain)",
+        "height": 820,
+        "width": 1640
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        680,
+        -1060
+      ],
+      "id": "7536499a-ad13-47dd-8c8b-7e6dc3200c2f",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "1VZAOJaHdlHcn0bE5ElWoz071xSs_mFvkwdsmvYEKCnc",
+          "mode": "list",
+          "cachedResultName": "SmartMart_Inventory",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VZAOJaHdlHcn0bE5ElWoz071xSs_mFvkwdsmvYEKCnc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Supply_Chain_Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VZAOJaHdlHcn0bE5ElWoz071xSs_mFvkwdsmvYEKCnc/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2800,
+        -920
+      ],
+      "id": "43b44875-33fa-4752-856d-316053120fd3",
+      "name": "Google Sheets11",
+      "credentials": {
+        "googleApi": {
+          "id": "k0Yo1kbGyRpC5HYu",
+          "name": "Google Service Account account 75"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.1,
+      "position": [
+        3380,
+        -920
+      ],
+      "id": "3eba47a7-9619-405c-99a5-b1a8f4d650ca",
+      "name": "Supabase Vector Store1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "G4OJbq7pyqExv8ox",
+          "name": "Supabase account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        3580,
+        -740
+      ],
+      "id": "42a1d3bc-4d30-43a9-b42a-7d80c44c64bc",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        2600,
+        -920
+      ],
+      "id": "f1654e96-87f4-495a-9fe8-902517a71d0a",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-embedding-001"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        -680
+      ],
+      "id": "996f3f8f-e26b-45e2-b203-452f59e21463",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "0RVwycsAs9IMCfRS",
+          "name": "Google Gemini(PaLM) Api account 99"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        3500,
+        -600
+      ],
+      "id": "fa409ef2-9e1a-4d37-a8d7-1300da95a6e7",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        3000,
+        -920
+      ],
+      "id": "123b110f-8822-4838-9d1b-97db96670343",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        3220,
+        -920
+      ],
+      "id": "70067b93-e1ba-49b3-87db-b1e151653fec",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "content": "Chèn dữ liệu vào Supabase",
+        "height": 560,
+        "width": 1580
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2380,
+        -1000
+      ],
+      "id": "7ff38bde-dd46-46a6-9a44-d3f376fbeaa2",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook2').item.json.body.message.from.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -140,
+        -680
+      ],
+      "id": "85960c5f-9ac9-49fa-933a-f3ad1cf6244e",
+      "name": "Postgres Chat Memory2",
+      "credentials": {
+        "postgres": {
+          "id": "GV6yRwjHWpGM2nZa",
+          "name": "Postgres account 28"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/text-embedding-004"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        40,
+        -480
+      ],
+      "id": "7a6b9e6a-ad81-4b29-8010-f8cfc19a34a8",
+      "name": "Embeddings Google Gemini3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "TJkLoklL8nSivKC7",
+          "name": "Google Gemini(PaLM) Api account 74"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "Sales",
+        "toolDescription": "=sử dụng vector để trả lời câu hỏi\n{{ $('Google Sheets6').item.json.Questions }}",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.1,
+      "position": [
+        140,
+        -680
+      ],
+      "id": "e315b424-cb27-4832-9814-49c5dc03251f",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "G4OJbq7pyqExv8ox",
+          "name": "Supabase account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://bot-api.zapps.me/bot1087819310551228737:RowcgFQhqoagqOAMiSgBwsJqTWkmdSLkwRnVdtKRZzJtSWNvsixBprqLBIuBPbUV/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "={{ $('Webhook2').item.json.body.message.chat.id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.Answers }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        360,
+        -940
+      ],
+      "id": "0d155c9a-b344-40b5-b228-7bf412534fa8",
+      "name": "HTTP Request6"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        -720
+      ],
+      "id": "750f65f4-23cc-4a46-b16e-ce625a913d90",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "0RVwycsAs9IMCfRS",
+          "name": "Google Gemini(PaLM) Api account 99"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.Questions }}",
+        "options": {
+          "systemMessage": "Bạn là AI chuyên phân tích bộ dữ liệu bán hàng.\n\nBạn chỉ được sử dụng dữ liệu từ Vector Store (context trả về từ Supabase) để trả lời.\nNếu thông tin không có trong dữ liệu thì phải trả lời: \"Dữ liệu hiện không đủ để trả lời câu hỏi này.\"\n\nDataset có các trường sau:\nRow ID, Order ID, Order Date, Ship Date, Ship Mode, Customer ID, Customer Name,\nSegment, Country, City, State, Postal Code, Region, Product ID,\nCategory, Sub-Category, Product Name, Sales\n\nQuy tắc trả lời:\n1. Luôn dựa trên dữ liệu đã truy xuất (context).\n2. Nếu tính toán → trình bày công thức và kết quả rõ ràng.\n3.Có thể trả lời theo format:\n1. Mục tiêu / câu hỏi cần phân tích\n2. Logic lọc dữ liệu\n3. Kết quả trực quan (bảng / bullet / nhận xét ngắn)\n\nVăn bản trả lời không được vượt quá 1800 ký tự\n\nTùy tình huống mà hãy trả lời người dùng với ngôn ngữ tự nhiên, dễ đọc, chi tiết, không nhất thiết phải theo cấu trúc kia"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -240,
+        -940
+      ],
+      "id": "711918e3-36fd-4ec1-878c-c87db5592585",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "38fd75f8-aee8-4b8d-8807-a4adfa58f563",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -800,
+        -940
+      ],
+      "id": "d5cd53d2-40c9-4d0a-83fb-a72019644995",
+      "name": "Webhook2",
+      "webhookId": "38fd75f8-aee8-4b8d-8807-a4adfa58f563"
+    },
+    {
+      "parameters": {
+        "content": "Chat bot truy vấn dữ liệu (sales)",
+        "height": 820,
+        "width": 1540
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -920,
+        -1060
+      ],
+      "id": "ecf5a61f-4e52-4c66-9917-01b9bc844c41",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "batchSize": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        540,
+        1440
+      ],
+      "id": "b104ec5d-2708-42c8-afe6-b9b1c66dad52",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "content": "## DEMAND FORECASTING MODULE\nDự báo nhu cầu sản phẩm dựa trên:\n- Dữ liệu lịch sử bán hàng\n- Xu hướng thị trường\n- Phân tích theo nhóm sản phẩm\n- Dự đoán 30 ngày tới",
+        "height": 440,
+        "width": 1080,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        1240
+      ],
+      "id": "10cdee9e-33ab-4fcd-8a94-f9826e335c15",
+      "name": "Note - Demand Forecasting"
+    },
+    {
+      "parameters": {
+        "content": "## INVENTORY OPTIMIZATION MODULE\nTối ưu hóa tồn kho:\n- Tính EOQ (Economic Order Quantity)\n- Xác định Reorder Point\n- Phân tích ABC\n- Cảnh báo thiếu hụt/dư thừa",
+        "height": 440,
+        "width": 1080,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        1700
+      ],
+      "id": "e9972019-69db-4638-ad26-5a0decf8e658",
+      "name": "Note - Inventory"
+    },
+    {
+      "parameters": {
+        "content": "## SUPPLY CHAIN TRACKING MODULE\nTheo dõi chuỗi cung ứng:\n- Phân tích hiệu suất vận chuyển\n- So sánh carriers và routes\n- Tối ưu chi phí logistics\n- Phát hiện điểm nghẽn",
+        "height": 400,
+        "width": 1080,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        2160
+      ],
+      "id": "ec92c0e2-c2b6-422b-8e23-95c84bbd922c",
+      "name": "Note - Tracking"
+    },
+    {
+      "parameters": {
+        "content": "## SUPPLIER EVALUATION MODULE\nĐánh giá nhà cung cấp:\n- Chất lượng sản phẩm\n- Độ tin cậy giao hàng\n- Chi phí cạnh tranh\n- Xếp hạng và khuyến nghị",
+        "height": 460,
+        "width": 1080,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        2580
+      ],
+      "id": "69b0dc8a-8e33-4af2-9b44-a41a3aa3f18f",
+      "name": "Note - Supplier"
+    },
+    {
+      "parameters": {
+        "content": "## AI CHAT INTERFACE\n",
+        "height": 820,
+        "width": 1120,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        1240
+      ],
+      "id": "1b7e6575-e9ff-4fb5-b83a-718126d9f01c",
+      "name": "Note - Chat Interface"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Bạn là chuyên gia đánh giá hiệu suất nhà cung cấp (Supplier Performance & Scorecard Specialist).\n\nNhiệm vụ của bạn:\n\nPhân tích toàn bộ dữ liệu nhà cung cấp (supplier_name, location, lead_times, production_volumes, manufacturing_costs, defect_rates, inspection_results…).\n\nĐánh giá theo 4 tiêu chí chính:\n\nChất lượng (defect_rates, inspection_results)\n\nĐộ tin cậy (lead_time, manufacturing_lead_time)\n\nChi phí cạnh tranh (manufacturing_costs)\n\nNăng lực sản xuất (production_volumes)\n\nBạn là Supplier Evaluation Agent.\n\nMọi phép tính điểm (score), xếp hạng (ranking), tổng hợp (overall_score) PHẢI gọi từ Code Tool.\n\nKhông tự tính toán trong agent.\n\nKhi cần số liệu → gọi tool \"supplier_eval_tool\"\n\nDữ liệu truyền vào tool:\n\n{\n  \"query\": <mảng JSON supplier>\n}\n\n\nSau khi tool trả kết quả JSON:\n\nBạn sao chép dữ liệu giữ nguyên\n\nViết thêm phần \"recommendations\" tiếng Việt (ngắn gọn, rõ ràng)\n\nTrả về JSON ONLY, không kèm giải thích bên ngoài.\n\nDưới đây là dữ liệu nhà cung cấp dạng JSON mà bạn cần phân tích:\n\n{{ $json.data.flat_list_string }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Bạn là chuyên gia đánh giá hiệu suất nhà cung cấp (Supplier Performance Evaluation Expert).\nBạn sử dụng mô hình điểm gồm: Quality – Reliability – Cost – Capacity – Overall Score để đánh giá và xếp hạng nhà cung cấp.\n\nQuy trình làm việc:\n\nNhận đầu vào là danh sách supplier dưới dạng JSON.\n\nGọi tool supplier_eval_tool để tính toàn bộ chỉ số:\n\nquality_score\n\nreliability_score\n\ncost_score\n\ncapacity_score\n\noverall_score\n\nranking & rating\n\nquality_analysis / cost_analysis / reliability_analysis\n\nKhông tự tính trong Agent — mọi giá trị đều phải đến từ Code Tool.\n\nSau khi có kết quả từ tool:\n\nBạn tóm tắt nhanh\n\nViết \"recommendations\" bằng tiếng Việt\n\nXuất ra đúng cấu trúc Output Format.\n\nBạn chỉ được trả về JSON hợp lệ, không được viết thêm văn bản bên ngoài JSON."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1660,
+        2620
+      ],
+      "id": "d0b58c0a-50de-418d-a5c8-3891ec55ca6a",
+      "name": "Supplier Evaluation Agent",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"supplier_scorecard\": [\n    {\n      \"supplier_name\": \"Supplier A\",\n      \"location\": \"Hanoi\",\n      \"quality_score\": 92.5,\n      \"reliability_score\": 88.0,\n      \"cost_score\": 75.2,\n      \"capacity_score\": 90.0,\n      \"overall_score\": 86.4,\n      \"rank\": 1,\n      \"rating\": \"A\"\n    },\n    {\n      \"supplier_name\": \"Supplier B\",\n      \"location\": \"Ho Chi Minh\",\n      \"quality_score\": 70.3,\n      \"reliability_score\": 64.5,\n      \"cost_score\": 55.0,\n      \"capacity_score\": 80.0,\n      \"overall_score\": 67.2,\n      \"rank\": 2,\n      \"rating\": \"B\"\n    },\n    {\n      \"supplier_name\": \"Supplier C\",\n      \"location\": \"Da Nang\",\n      \"quality_score\": 55.1,\n      \"reliability_score\": 50.0,\n      \"cost_score\": 40.2,\n      \"capacity_score\": 45.0,\n      \"overall_score\": 48.3,\n      \"rank\": 3,\n      \"rating\": \"C\"\n    }\n  ],\n\n  \"quality_analysis\": {\n    \"avg_defect_rate\": 2.134,\n    \"pass_rate\": \"92.3%\",\n    \"best_supplier\": \"Supplier A\",\n    \"worst_supplier\": \"Supplier C\"\n  },\n\n  \"cost_analysis\": {\n    \"avg_manufacturing_cost\": 12.55,\n    \"most_competitive\": \"Supplier B\",\n    \"cost_range\": \"8.50 - 18.20\"\n  },\n\n  \"reliability_analysis\": {\n    \"avg_lead_time\": 6.8,\n    \"most_reliable\": \"Supplier A\",\n    \"high_risk_suppliers\": [\n      \"Supplier C\"\n    ]\n  },\n\n  \"recommendations\": [\n    {\n      \"supplier\": \"Supplier A\",\n      \"action\": \"maintain\",\n      \"reason\": \"Nhà cung cấp có chất lượng và độ ổn định cao, nên tiếp tục duy trì hợp tác lâu dài.\"\n    },\n    {\n      \"supplier\": \"Supplier B\",\n      \"action\": \"improve\",\n      \"reason\": \"Hiệu suất ở mức trung bình, nên cải thiện về thời gian giao hàng và chi phí sản xuất.\"\n    },\n    {\n      \"supplier\": \"Supplier C\",\n      \"action\": \"replace\",\n      \"reason\": \"Hiệu suất thấp, tỷ lệ lỗi cao và độ tin cậy thấp. Nên cân nhắc thay thế hoặc giảm phụ thuộc.\"\n    }\n  ]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1860,
+        2820
+      ],
+      "id": "c31469a5-599d-4c71-9874-db4a9208d824",
+      "name": "Supplier Evaluation Output"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        2820
+      ],
+      "id": "9eb1b06a-a278-48a8-8dad-e424841c8498",
+      "name": "Gemini - Supplier",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "0RVwycsAs9IMCfRS",
+          "name": "Google Gemini(PaLM) Api account 99"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Bạn là chuyên gia phân tích chuỗi cung ứng (Supply Chain Analytics Specialist).\n\nNhiệm vụ của bạn:\n\nTheo dõi và phân tích hiệu suất vận chuyển\n\nĐánh giá shipping carriers, shipping times, shipping costs\n\nSo sánh các phương thức vận chuyển (transportation modes)\n\nPhân tích hiệu quả tuyến đường (routes)\n\nĐánh giá lead times và độ tin cậy giao hàng\n\nXác định các điểm nghẽn trong chuỗi cung ứng (bottlenecks)\n\nĐưa ra báo cáo tổng hợp và khuyến nghị cải thiện\n\nBạn là Supply Chain Analysis Agent.\n\nMọi kết quả định lượng (avg_shipping_time, avg_shipping_cost, on_time_delivery_rate, reliability_score, efficiency_score…) PHẢI lấy từ Code Tool, không được tự tính.\n\nKhi cần số liệu, hãy gọi tool \"SupplyChainAnalysisTool\" với tham số:\n\n{\n  \"query\": <toàn bộ JSON đầu vào>\n}\n\n\nSau khi nhận kết quả từ tool:\n\nGiữ nguyên toàn bộ dữ liệu số\n\nViết lại trường \"recommendations\" bằng tiếng Việt ngắn gọn\n\nChỉ xuất ra đúng cấu trúc JSON trong Output Format, không kèm chữ ngoài JSON\n\nDưới đây là dữ liệu chuỗi cung ứng cần phân tích (mảng JSON):\n{{ $json.data.flat_list_string }}\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Bạn là chuyên gia theo dõi chuỗi cung ứng (Supply Chain Tracking Specialist). Nhiệm vụ của bạn là phân tích toàn bộ dữ liệu logistics (nhà vận chuyển, thời gian vận chuyển, chi phí vận chuyển, tuyến đường, phương thức vận chuyển và lead time), đánh giá hiệu suất theo từng carrier, nhận diện điểm nghẽn trong chuỗi cung ứng, so sánh hiệu quả chi phí và thời gian giữa các phương thức vận chuyển, từ đó tối ưu hóa thời gian giao hàng, giảm chi phí vận chuyển và đề xuất các khuyến nghị cải thiện quy trình vận hành một cách rõ ràng, thực tế và dễ áp dụng."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1640,
+        2200
+      ],
+      "id": "bdef3322-5eea-4842-9e27-fcf874ce8181",
+      "name": "Supply Chain Tracking Agent",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"logistics_overview\": {\n    \"total_shipments\": 123,\n    \"avg_shipping_time\": 4.52,\n    \"avg_shipping_cost\": 12.33,\n    \"on_time_delivery_rate\": \"92.5%\"\n  },\n  \"carrier_performance\": [\n    {\n      \"carrier\": \"DHL\",\n      \"avg_time\": 4.12,\n      \"avg_cost\": 11.3,\n      \"reliability_score\": 87.5,\n      \"volume\": 230\n    },\n    {\n      \"carrier\": \"FedEx\",\n      \"avg_time\": 5.23,\n      \"avg_cost\": 13.2,\n      \"reliability_score\": 90.1,\n      \"volume\": 195\n    }\n  ],\n  \"route_analysis\": [\n    {\n      \"route\": \"VN-US\",\n      \"avg_cost\": 11.8,\n      \"avg_time\": 5.9,\n      \"efficiency_score\": 16.95\n    },\n    {\n      \"route\": \"VN-EU\",\n      \"avg_cost\": 13.2,\n      \"avg_time\": 6.4,\n      \"efficiency_score\": 15.62\n    }\n  ],\n  \"transportation_mode_comparison\": [\n    {\n      \"mode\": \"Air\",\n      \"cost_efficiency\": \"poor\",\n      \"time_efficiency\": \"fast\",\n      \"usage_rate\": \"45.2%\"\n    },\n    {\n      \"mode\": \"Sea\",\n      \"cost_efficiency\": \"good\",\n      \"time_efficiency\": \"slow\",\n      \"usage_rate\": \"54.8%\"\n    }\n  ],\n  \"bottlenecks\": [\n    \"Overall on-time delivery rate is below acceptable threshold.\",\n    \"Carrier DHL has lower reliability compared to others.\"\n  ],\n  \"recommendations\": [\n    \"Review performance of low-reliability carriers.\",\n    \"Use more efficient routes for high-priority shipments.\"\n  ]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1840,
+        2420
+      ],
+      "id": "5b687aa4-6ca2-42e1-8b0e-abf2be825f10",
+      "name": "Supply Chain Tracking Output"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        2400
+      ],
+      "id": "6ec807c6-d1b8-403e-8001-0ed4360380fc",
+      "name": "Gemini - Tracking",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "0RVwycsAs9IMCfRS",
+          "name": "Google Gemini(PaLM) Api account 99"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Bạn là chuyên gia tối ưu tồn kho (Inventory Optimization Agent).\n\nNhiệm vụ của bạn:\n\nPhân tích dữ liệu tồn kho theo từng SKU\n\nXem xét các yếu tố: stock levels, lead times, order quantities, number of products sold, shipping times\n\nTính toán mức tồn kho tối ưu, điểm đặt hàng lại (Reorder Point), Safety Stock và EOQ\n\nXác định SKU thiếu hụt/dư thừa (understock/overstock)\n\nĐưa ra khuyến nghị tối ưu chi phí lưu kho và cải thiện vòng quay hàng tồn kho\n\nBạn là Inventory Optimization Agent.\n\nMỌI phép tính số (optimal_stock, reorder_point, safety_stock, eoq, status, inventory_summary, critical_items) PHẢI lấy từ Code Tool, không được tự tính.\n\nKhi cần số liệu, hãy gọi tool \"code_tool2\" (đúng tên hiển thị trong mục Tools).\n\nTham số truyền cho tool:\n\n{\n  \"query\": {{ $json.data.flat_list_string }}\n}\n\n\nSau khi nhận JSON từ tool:\n\nGiữ nguyên tất cả các trường số liệu mà tool trả về.\n\nViết lại trường \"recommendations\" bằng tiếng Việt ngắn gọn, dựa trên kết quả phân tích tồn kho.\n\nHoàn thiện trường \"cost_savings\" (mô tả ngắn về tiềm năng tiết kiệm chi phí nếu áp dụng mức tồn kho tối ưu).\n\nChỉ trả về JSON, không kèm thêm bất kỳ câu chữ nào ngoài JSON.\n\nBạn phải sử dụng Code Tool để tính toán tất cả các giá trị định lượng sau:\n\noptimal_stock\n\nreorder_point\n\nsafety_stock\n\neoq\n\nstatus (overstock/understock/optimal)\n\ncác trường trong inventory_summary\n\ncác danh sách trong critical_items\n\nDưới đây là danh sách sản phẩm. Hãy gọi tool để phân tích và tối ưu tồn kho:\n\n{{ $json.data.flat_list_string }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Bạn là chuyên gia tối ưu tồn kho.\n\nQuy trình làm việc:\n\nNhận dữ liệu đầu vào (mảng JSON các SKU với stock levels, lead times, order quantities, số lượng bán, shipping times).\n\nGọi tool InventoryOptimizationTool với tham số:\n\nquery: toàn bộ mảng JSON sản phẩm.\n\nTool trả về dữ liệu đã xử lý (ở dạng JSON string), bao gồm các chỉ số: optimal_stock, reorder_point, safety_stock, eoq, phân loại overstock/understock/optimal, và các tổng quan tồn kho.\n\nBạn đọc dữ liệu đó, giữ nguyên toàn bộ giá trị số, chỉ bổ sung và chỉnh sửa trường \"recommendations\" và \"cost_savings\" cho phù hợp với bối cảnh kinh doanh.\n\nSau đó xuất ra đúng cấu trúc yêu cầu trong Output Format tồn kho, chỉ trả về JSON, không thêm bất kỳ nội dung nào ngoài JSON."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1540,
+        1780
+      ],
+      "id": "9db3cd27-05aa-4755-a02f-eeb73cf543fb",
+      "name": "Inventory Optimization Agent",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "[\n  {\n    \"output\": {\n      \"inventory_summary\": {\n        \"total_stock_value\": 250000.75,\n        \"avg_stock_level\": 42.5,\n        \"inventory_turnover_ratio\": 3.8\n      },\n      \"sku_optimization\": [\n        {\n          \"sku\": \"SKU123\",\n          \"current_stock\": 50,\n          \"optimal_stock\": 65,\n          \"reorder_point\": 40,\n          \"eoq\": 120,\n          \"safety_stock\": 18,\n          \"status\": \"understock\"\n        }\n      ],\n      \"critical_items\": {\n        \"out_of_stock_risk\": [\"SKU123\", \"SKU088\"],\n        \"overstock_items\": [\"SKU201\"]\n      },\n      \"recommendations\": [\n        \"Tăng lượng tồn kho đối với các SKU có mức độ biến động nhu cầu cao.\",\n        \"Rà soát các mặt hàng tồn kho dư thừa để giảm chi phí lưu kho.\"\n      ],\n      \"cost_savings\": \"Ước tính tiết kiệm hằng năm: 12.500 USD.\"\n    }\n  }\n]\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1820,
+        2000
+      ],
+      "id": "9c196021-a2b7-479c-bcfe-85ffed0082e4",
+      "name": "Inventory Optimization Output"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        1980
+      ],
+      "id": "c13ab563-7667-449f-8831-d8e4accdeeb3",
+      "name": "Gemini - Inventory",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "0RVwycsAs9IMCfRS",
+          "name": "Google Gemini(PaLM) Api account 99"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk",
+          "mode": "list",
+          "cachedResultName": "AI Agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 746693711,
+          "mode": "list",
+          "cachedResultName": "AI",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit#gid=746693711"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Questions": "={{ $('Webhook').item.json.body.message.text }}"
+          },
+          "matchingColumns": [
+            "Questions"
+          ],
+          "schema": [
+            {
+              "id": "Questions",
+              "displayName": "Questions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Answers",
+              "displayName": "Answers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Kiểm chứng",
+              "displayName": "Kiểm chứng",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1180,
+        -920
+      ],
+      "id": "ca63e134-930f-4a70-a9fb-6fa276d15197",
+      "name": "Google Sheets4",
+      "credentials": {
+        "googleApi": {
+          "id": "k0Yo1kbGyRpC5HYu",
+          "name": "Google Service Account account 75"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk",
+          "mode": "list",
+          "cachedResultName": "AI Agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 746693711,
+          "mode": "list",
+          "cachedResultName": "AI",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit#gid=746693711"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Answers": "={{ $('AI Agent').item.json.output }}",
+            "Questions": "={{ $('Google Sheets4').item.json.Questions }}"
+          },
+          "matchingColumns": [
+            "Questions"
+          ],
+          "schema": [
+            {
+              "id": "Questions",
+              "displayName": "Questions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Answers",
+              "displayName": "Answers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1880,
+        -920
+      ],
+      "id": "1fb134d7-7881-4795-baab-5c6245a36ab0",
+      "name": "Google Sheets5",
+      "credentials": {
+        "googleApi": {
+          "id": "k0Yo1kbGyRpC5HYu",
+          "name": "Google Service Account account 75"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk",
+          "mode": "list",
+          "cachedResultName": "AI Agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1129814216,
+          "mode": "list",
+          "cachedResultName": "Sales",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit#gid=1129814216"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Questions": "={{ $('Webhook2').item.json.body.message.text }}"
+          },
+          "matchingColumns": [
+            "Questions"
+          ],
+          "schema": [
+            {
+              "id": "Questions",
+              "displayName": "Questions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Answers",
+              "displayName": "Answers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Kiểm chứng",
+              "displayName": "Kiểm chứng",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -440,
+        -940
+      ],
+      "id": "18a86ae9-6484-4baa-83b7-277a0f814a9b",
+      "name": "Google Sheets6",
+      "credentials": {
+        "googleApi": {
+          "id": "k0Yo1kbGyRpC5HYu",
+          "name": "Google Service Account account 75"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk",
+          "mode": "list",
+          "cachedResultName": "AI Agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1129814216,
+          "mode": "list",
+          "cachedResultName": "Sales",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit#gid=1129814216"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Answers": "={{ $json.output }}",
+            "Questions": "={{ $('Google Sheets6').item.json.Questions }}"
+          },
+          "matchingColumns": [
+            "Questions"
+          ],
+          "schema": [
+            {
+              "id": "Questions",
+              "displayName": "Questions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Answers",
+              "displayName": "Answers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Kiểm chứng",
+              "displayName": "Kiểm chứng",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        120,
+        -940
+      ],
+      "id": "75a830b1-5642-42c0-87a7-abf966101c39",
+      "name": "Google Sheets7",
+      "credentials": {
+        "googleApi": {
+          "id": "k0Yo1kbGyRpC5HYu",
+          "name": "Google Service Account account 75"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://bot-api.zapps.me/bot1087819310551228737:RowcgFQhqoagqOAMiSgBwsJqTWkmdSLkwRnVdtKRZzJtSWNvsixBprqLBIuBPbUV/setWebhook",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://ai-agent.nocoai.vn/webhook-test/38fd75f8-aee8-4b8d-8807-a4adfa58f563"
+            },
+            {
+              "name": "secret_token",
+              "value": "18022005"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -520,
+        1820
+      ],
+      "id": "2926f3e1-f0ff-4753-a0ff-225f9da0eb18",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "38fd75f8-aee8-4b8d-8807-a4adfa58f563",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -620,
+        1380
+      ],
+      "id": "4c509e97-edfc-4ebd-aa6c-df4e57e4210f",
+      "name": "Webhook1",
+      "webhookId": "38fd75f8-aee8-4b8d-8807-a4adfa58f563"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy item đầu tiên từ input (chỉ có 1 item)\nconst item = $input.item;\n\n// Chuỗi JSON nằm trong item.json.output\nlet raw = item.json.output;\n\n// 1. Loại bỏ code block ```json ... ```\nraw = raw.replace(/```json/gi, \"\")\n         .replace(/```/g, \"\")\n         .trim();\n\n// 2. Parse JSON string thành object\nlet dataArray;\ntry {\n  dataArray = JSON.parse(raw);\n} catch (e) {\n  throw new Error(\"Không thể parse JSON từ chuỗi đầu vào: \" + e.message);\n}\n\n// 3. Kiểm tra JSON phải là một array\nif (!Array.isArray(dataArray)) {\n  throw new Error(\"Dữ liệu sau parse không phải mảng.\");\n}\n\n// 4. Chuẩn hóa output dạng Make yêu cầu\nconst output = dataArray.map(obj => ({\n  json: obj   // obj phải là object → OK\n}));\n\n// 5. Trả về mảng object cho Make\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        140,
+        1380
+      ],
+      "id": "e678d290-ba52-4368-9eb0-24b014b8f7cc",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "supply_chain_data"
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        60,
+        1660
+      ],
+      "id": "a5b646ac-fdd5-4daf-ba43-aaec84c31a8f",
+      "name": "Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "oxMExWx9qNK1IuWt",
+          "name": "Supabase account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk",
+          "mode": "list",
+          "cachedResultName": "AI Agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 557796564,
+          "mode": "list",
+          "cachedResultName": "Demand_Forecasting",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit#gid=557796564"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "recommendations": "={{ $json.output.recommendations }}",
+            "high_demand_products": "={{ $json.output.high_demand_products }}",
+            "low_demand_products": "={{ $json.output.low_demand_products }}",
+            "forecast_summary": "={{ $json.output.forecast_summary }}",
+            "product_analysis": "={{ $json.output.product_analysis }}"
+          },
+          "matchingColumns": [
+            "forecast_summary"
+          ],
+          "schema": [
+            {
+              "id": "forecast_summary",
+              "displayName": "forecast_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "product_analysis",
+              "displayName": "product_analysis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "recommendations",
+              "displayName": "recommendations",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "high_demand_products",
+              "displayName": "high_demand_products",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "low_demand_products",
+              "displayName": "low_demand_products",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2000,
+        1520
+      ],
+      "id": "4ae6e6f9-ea16-4d83-81c8-b129a53e8baa",
+      "name": "Google Sheets2",
+      "credentials": {
+        "googleApi": {
+          "id": "k0Yo1kbGyRpC5HYu",
+          "name": "Google Service Account account 75"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        1620
+      ],
+      "id": "63935c4e-23c0-4dcb-8f8a-88b3c5a0bd5c",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "0RVwycsAs9IMCfRS",
+          "name": "Google Gemini(PaLM) Api account 99"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===============================\n// Utility functions\n// ===============================\n\nfunction mean(arr) {\n  if (!arr || arr.length === 0) return 0;\n  return arr.reduce((a, b) => a + b, 0) / arr.length;\n}\n\nfunction std(arr) {\n  if (!arr || arr.length === 0) return 0;\n  const m = mean(arr);\n  return Math.sqrt(mean(arr.map(x => (x - m) ** 2)));\n}\n\n// Normalize input format\nfunction normalizeQuery(query) {\n  try {\n    if (typeof query === \"string\") return JSON.parse(query);\n    if (Array.isArray(query)) return query.map(i => i.json ?? i);\n    if (query.json) return [query.json];\n    return [query];\n  } catch (e) {\n    throw new Error(\"Invalid query format: \" + e.message);\n  }\n}\n\n// ===============================\n// Inventory Model Formulas\n// ===============================\n\n// EOQ formula\nfunction calcEOQ(D, K, H) {\n  if (D <= 0 || K <= 0 || H <= 0) return 0;\n  return Math.sqrt((2 * D * K) / H);\n}\n\n// Reorder Point\nfunction calcROP(dailyDemand, L, sigma) {\n  const z = 1.65;  // 95% service level\n  const safety_stock = z * sigma * Math.sqrt(L);\n  return {\n    rop: dailyDemand * L + safety_stock,\n    safety_stock\n  };\n}\n\n// Status classification\nfunction classifyStatus(current, optimal) {\n  if (optimal <= 0) return \"optimal\";\n  const ratio = current / optimal;\n  if (ratio < 0.9) return \"understock\";\n  if (ratio > 1.1) return \"overstock\";\n  return \"optimal\";\n}\n\n// ===============================\n// MAIN EXECUTION\n// ===============================\n\ntry {\n  const data = normalizeQuery(query);\n\n  if (!Array.isArray(data) || data.length === 0) {\n    return JSON.stringify({ error: \"Input must be an array of SKU items\" });\n  }\n\n  // Demand statistics per product_type\n  const groups = {};\n  data.forEach(sku => {\n    const pt = sku.product_type ?? \"Unknown\";\n    const sold = Number(sku.number_of_products_sold || 0);\n    if (!groups[pt]) groups[pt] = [];\n    groups[pt].push(sold);\n  });\n\n  const demandStats = {};\n  Object.keys(groups).forEach(pt => {\n    demandStats[pt] = {\n      mean: mean(groups[pt]),\n      std: std(groups[pt])\n    };\n  });\n\n  // Global accumulators\n  let totalStockValue = 0;\n  let stockLevels = [];\n  let turnoverValues = [];\n\n  let outOfStockRisk = [];\n  let overstockItems = [];\n\n  const skuOptimization = [];\n\n  // Assumptions\n  const orderCost = 100; // K\n  const holdingRate = 0.25; // 25% yearly\n\n  data.forEach(raw => {\n    const sku = raw.sku ?? raw.SKU ?? \"\";\n    const productType = raw.product_type ?? \"Unknown\";\n\n    const price = Number(raw.price || 0);\n    const stock = Number(raw.stock_levels ?? raw.stock ?? 0);\n    const sold = Number(raw.number_of_products_sold ?? 0);\n    const lead = Number(raw.lead_times ?? 1);\n    const shipping = Number(raw.shipping_times ?? 1);\n\n    const dailyDemand = sold > 0 ? sold : demandStats[productType]?.mean ?? 0;\n    const annualDemand = dailyDemand * 365;\n    const holdingCost = price * holdingRate;\n\n    // Calculate EOQ\n    const eoq = calcEOQ(annualDemand, orderCost, holdingCost);\n\n    // Combined lead time\n    const L = Math.max(1, lead + shipping);\n\n    // ROP + Safety Stock\n    const ropData = calcROP(\n      dailyDemand,\n      L,\n      demandStats[productType]?.std ?? 0\n    );\n    const reorderPoint = ropData.rop;\n    const safetyStock = ropData.safety_stock;\n\n    const optimalStock = reorderPoint + eoq / 2;\n\n    const status = classifyStatus(stock, optimalStock);\n\n    // Accumulate global metrics\n    totalStockValue += stock * price;\n    stockLevels.push(stock);\n\n    // Inventory turnover approximation\n    if (stock > 0) {\n      turnoverValues.push((annualDemand || 1) / stock);\n    }\n\n    // Critical item classification\n    if (status === \"understock\") outOfStockRisk.push(sku);\n    if (status === \"overstock\") overstockItems.push(sku);\n\n    skuOptimization.push({\n      sku: sku,\n      current_stock: Number(stock.toFixed(2)),\n      optimal_stock: Number(optimalStock.toFixed(2)),\n      reorder_point: Number(reorderPoint.toFixed(2)),\n      eoq: Number(eoq.toFixed(2)),\n      safety_stock: Number(safetyStock.toFixed(2)),\n      status: status\n    });\n  });\n\n  const inventorySummary = {\n    total_stock_value: Number(totalStockValue.toFixed(2)),\n    avg_stock_level: Number(mean(stockLevels).toFixed(2)),\n    inventory_turnover_ratio: Number(mean(turnoverValues).toFixed(2))\n  };\n\n  const output = {\n    inventory_summary: inventorySummary,\n    sku_optimization: skuOptimization,\n    critical_items: {\n      out_of_stock_risk: outOfStockRisk,\n      overstock_items: overstockItems\n    },\n    recommendations: [\"AI_generated_recommendation\"],\n    cost_savings: \"To be generated by agent\"\n  };\n\n  return JSON.stringify(output);\n\n} catch (err) {\n  return JSON.stringify({ error: err.message });\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.2,
+      "position": [
+        1640,
+        2000
+      ],
+      "id": "32006bd7-c9b7-425a-b0a4-b4226167cad0",
+      "name": "Code Tool2"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk",
+          "mode": "list",
+          "cachedResultName": "AI Agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 239876634,
+          "mode": "list",
+          "cachedResultName": "Inventory_Optimization",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit#gid=239876634"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "total_stock_value": "={{ $json.output[0].output.inventory_summary.total_stock_value }}",
+            "avg_stock_level": "={{ $json.output[0].output.inventory_summary.avg_stock_level }}",
+            "inventory_turnover_ratio": "={{ $json.output[0].output.inventory_summary.inventory_turnover_ratio }}",
+            "sku_optimization": "={{ $json.output[0].output.sku_optimization }}",
+            "critical_items": "={{ $json.output[0].output.critical_items }}",
+            "recommendations": "={{ $json.output[0].output.recommendations }}",
+            "cost_savings": "={{ $json.output[0].output.cost_savings }}"
+          },
+          "matchingColumns": [
+            "total_stock_value"
+          ],
+          "schema": [
+            {
+              "id": "total_stock_value",
+              "displayName": "total_stock_value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "avg_stock_level",
+              "displayName": "avg_stock_level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "inventory_turnover_ratio",
+              "displayName": "inventory_turnover_ratio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sku_optimization",
+              "displayName": "sku_optimization",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "critical_items",
+              "displayName": "critical_items",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "recommendations",
+              "displayName": "recommendations",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cost_savings",
+              "displayName": "cost_savings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2020,
+        1900
+      ],
+      "id": "69e35c7c-9012-457b-8afb-105140b5431e",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleApi": {
+          "id": "k0Yo1kbGyRpC5HYu",
+          "name": "Google Service Account account 75"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===============================\n// Helper functions\n// ===============================\nfunction normalizeQuery(query) {\n  try {\n    // Nếu là string JSON\n    if (typeof query === \"string\") {\n      const parsed = JSON.parse(query);\n      if (Array.isArray(parsed)) return parsed;\n      if (parsed.flat_list && Array.isArray(parsed.flat_list)) return parsed.flat_list;\n      if (parsed.records && Array.isArray(parsed.records)) return parsed.records;\n      return [parsed];\n    }\n\n    // Nếu là array object\n    if (Array.isArray(query)) {\n      return query.map(i => (i && i.json) ? i.json : i);\n    }\n\n    // Nếu là object đơn\n    if (query && typeof query === \"object\") {\n      if (Array.isArray(query.flat_list)) return query.flat_list;\n      if (Array.isArray(query.records)) return query.records;\n      if (query.json) return [query.json];\n      return [query];\n    }\n\n    throw new Error(\"Invalid query format\");\n  } catch (e) {\n    throw new Error(\"Invalid query format: \" + e.message);\n  }\n}\n\nfunction mean(arr) {\n  if (!arr || !arr.length) return 0;\n  return arr.reduce((a, b) => a + b, 0) / arr.length;\n}\n\nfunction groupBy(arr, key) {\n  return arr.reduce((acc, item) => {\n    const k = item[key] != null ? item[key] : \"Unknown\";\n    if (!acc[k]) acc[k] = [];\n    acc[k].push(item);\n    return acc;\n  }, {});\n}\n\n// Min-max normalize to 0–100 (higher is better if invert=false, lower is better if invert=true)\nfunction normalizeScore(value, min, max, invert) {\n  if (max === min) return 50; // tất cả giống nhau\n  let score = (value - min) / (max - min); // 0–1\n  if (invert) score = 1 - score;\n  return score * 100;\n}\n\n// ===============================\n// MAIN\n// ===============================\ntry {\n  const rows = normalizeQuery(query);\n\n  if (!Array.isArray(rows) || rows.length === 0) {\n    return JSON.stringify({ error: \"Input must be a non-empty array of supplier records.\" });\n  }\n\n  // Chuẩn hóa dữ liệu từng bản ghi\n  rows.forEach(r => {\n    r.supplier_name = r.supplier_name || r.Supplier_name || r.supplier || \"Unknown\";\n    r.location = r.location || r.Location || \"\";\n    r.defect_rates = Number(r.defect_rates ?? r.Defect_rates ?? 0);\n    r.inspection_results = r.inspection_results || r.Inspection_results || null; // có thể là \"pass\"/\"fail\" hoặc 1/0\n    r.lead_times = Number(r.lead_times ?? r.Lead_times ?? 0);\n    r.manufacturing_lead_time = Number(r.manufacturing_lead_time ?? r.Manufacturing_lead_time ?? 0);\n    r.manufacturing_costs = Number(r.manufacturing_costs ?? r.Manufacturing_costs ?? 0);\n    r.production_volumes = Number(r.production_volumes ?? r.Production_volumes ?? 0);\n  });\n\n  // Group theo supplier\n  const suppliers = groupBy(rows, \"supplier_name\");\n\n  // Tính global min/max cho normalizing\n  const allDefects = rows.map(r => r.defect_rates).filter(v => !isNaN(v));\n  const allCosts = rows.map(r => r.manufacturing_costs).filter(v => !isNaN(v));\n  const allLead = rows.map(r => r.lead_times).filter(v => !isNaN(v));\n  const allCapacity = rows.map(r => r.production_volumes).filter(v => !isNaN(v));\n\n  const minDef = Math.min(...allDefects, 0);\n  const maxDef = Math.max(...allDefects, 0);\n  const minCost = Math.min(...allCosts, 0);\n  const maxCost = Math.max(...allCosts, 0);\n  const minLead = Math.min(...allLead, 0);\n  const maxLead = Math.max(...allLead, 0);\n  const minCap = Math.min(...allCapacity, 0);\n  const maxCap = Math.max(...allCapacity, 0);\n\n  // ================== Supplier scorecard ==================\n  const scorecard = [];\n\n  Object.keys(suppliers).forEach(name => {\n    const arr = suppliers[name];\n    const loc = arr[0].location || \"\";\n\n    const avgDef = mean(arr.map(r => r.defect_rates));\n    const passFlags = arr.map(r => {\n      const v = r.inspection_results;\n      if (v === \"pass\" || v === \"PASS\") return 1;\n      if (v === \"fail\" || v === \"FAIL\") return 0;\n      if (v === 1 || v === \"1\" || v === true) return 1;\n      if (v === 0 || v === \"0\" || v === false) return 0;\n      return 1; // nếu không có dữ liệu, giả định pass\n    });\n    const passRate = mean(passFlags);\n\n    const avgLead = mean(arr.map(r => r.lead_times));\n    const avgMfgLead = mean(arr.map(r => r.manufacturing_lead_time));\n    const avgCost = mean(arr.map(r => r.manufacturing_costs));\n    const totalCap = arr.reduce((s, r) => s + r.production_volumes, 0);\n\n    // Quality score: 50% từ defect (thấp hơn tốt hơn), 50% từ pass rate\n    const qualityFromDef = normalizeScore(avgDef, minDef, maxDef, true);\n    const qualityFromPass = passRate * 100;\n    const qualityScore = 0.5 * qualityFromDef + 0.5 * qualityFromPass;\n\n    // Reliability: lead time + manufacturing lead time (thấp hơn tốt hơn)\n    const relTime = (avgLead + avgMfgLead) / 2 || avgLead || avgMfgLead;\n    const reliabilityScore = normalizeScore(relTime, minLead, maxLead, true);\n\n    // Cost score: cost càng thấp càng tốt\n    const costScore = normalizeScore(avgCost, minCost, maxCost, true);\n\n    // Capacity score: volume càng cao càng tốt\n    const capacityScore = normalizeScore(totalCap, minCap, maxCap, false);\n\n    // Overall score: trọng số\n    const overallScore =\n      0.35 * qualityScore +\n      0.25 * reliabilityScore +\n      0.2 * costScore +\n      0.2 * capacityScore;\n\n    scorecard.push({\n      supplier_name: name,\n      location: loc,\n      quality_score: Number(qualityScore.toFixed(1)),\n      reliability_score: Number(reliabilityScore.toFixed(1)),\n      cost_score: Number(costScore.toFixed(1)),\n      capacity_score: Number(capacityScore.toFixed(1)),\n      overall_score: Number(overallScore.toFixed(1))\n    });\n  });\n\n  // Xếp hạng & rating\n  scorecard.sort((a, b) => b.overall_score - a.overall_score);\n  scorecard.forEach((s, idx) => {\n    s.rank = idx + 1;\n    const os = s.overall_score;\n    let rating = \"D\";\n    if (os >= 85) rating = \"A\";\n    else if (os >= 70) rating = \"B\";\n    else if (os >= 55) rating = \"C\";\n    s.rating = rating;\n  });\n\n  // ================== Quality analysis ==================\n  const avgDefectRate = mean(allDefects);\n  const globalPassFlags = rows.map(r => {\n    const v = r.inspection_results;\n    if (v === \"pass\" || v === \"PASS\") return 1;\n    if (v === \"fail\" || v === \"FAIL\") return 0;\n    if (v === 1 || v === \"1\" || v === true) return 1;\n    if (v === 0 || v === \"0\" || v === false) return 0;\n    return 1;\n  });\n  const globalPassRate = mean(globalPassFlags);\n\n  let bestQuality = null;\n  let worstQuality = null;\n  if (scorecard.length > 0) {\n    bestQuality = scorecard.reduce((best, cur) =>\n      !best || cur.quality_score > best.quality_score ? cur : best\n    ).supplier_name;\n    worstQuality = scorecard.reduce((worst, cur) =>\n      !worst || cur.quality_score < worst.quality_score ? cur : worst\n    ).supplier_name;\n  }\n\n  const quality_analysis = {\n    avg_defect_rate: Number(avgDefectRate.toFixed(3)),\n    pass_rate: (globalPassRate * 100).toFixed(1) + \"%\",\n    best_supplier: bestQuality || \"\",\n    worst_supplier: worstQuality || \"\"\n  };\n\n  // ================== Cost analysis ==================\n  const avgCostGlobal = mean(allCosts);\n  let mostCompetitive = \"\";\n  if (scorecard.length > 0) {\n    mostCompetitive = scorecard.reduce((best, cur) =>\n      !best || cur.cost_score > best.cost_score ? cur : best\n    ).supplier_name;\n  }\n\n  const minCostGlobal = allCosts.length ? Math.min(...allCosts) : 0;\n  const maxCostGlobal = allCosts.length ? Math.max(...allCosts) : 0;\n\n  const cost_analysis = {\n    avg_manufacturing_cost: Number(avgCostGlobal.toFixed(2)),\n    most_competitive: mostCompetitive,\n    cost_range: `${minCostGlobal.toFixed(2)} - ${maxCostGlobal.toFixed(2)}`\n  };\n\n  // ================== Reliability analysis ==================\n  const avgLeadGlobal = mean(allLead);\n\n  let mostReliable = \"\";\n  if (scorecard.length > 0) {\n    mostReliable = scorecard.reduce((best, cur) =>\n      !best || cur.reliability_score > best.reliability_score ? cur : best\n    ).supplier_name;\n  }\n\n  const highRiskSuppliers = scorecard\n    .filter(s => s.reliability_score < 60)\n    .map(s => s.supplier_name);\n\n  const reliability_analysis = {\n    avg_lead_time: Number(avgLeadGlobal.toFixed(2)),\n    most_reliable: mostReliable,\n    high_risk_suppliers: highRiskSuppliers\n  };\n\n  // ================== Recommendations ==================\n  const recommendations = scorecard.map(s => {\n    let action = \"maintain\";\n    if (s.rating === \"B\" || s.rating === \"C\") action = \"improve\";\n    if (s.rating === \"D\") action = \"replace\";\n\n    let reason = \"\";\n    if (action === \"maintain\") {\n      reason = \"Nhà cung cấp có hiệu suất tổng thể tốt, nên tiếp tục duy trì hợp tác.\";\n    } else if (action === \"improve\") {\n      reason = \"Hiệu suất ở mức trung bình, cần làm việc để cải thiện chất lượng, chi phí hoặc thời gian giao hàng.\";\n    } else {\n      reason = \"Hiệu suất thấp, rủi ro cao về chất lượng hoặc giao hàng, nên cân nhắc thay thế hoặc giảm phụ thuộc.\";\n    }\n\n    return {\n      supplier: s.supplier_name,\n      action: action,\n      reason: reason\n    };\n  });\n\n  const output = {\n    supplier_scorecard: scorecard,\n    quality_analysis,\n    cost_analysis,\n    reliability_analysis,\n    recommendations\n  };\n\n  return JSON.stringify(output);\n\n} catch (err) {\n  return JSON.stringify({ error: err.message });\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.2,
+      "position": [
+        1720,
+        2880
+      ],
+      "id": "320b48d8-bb50-4ace-af1e-4c2e67b3964e",
+      "name": "Code Tool3"
+    },
+    {
+      "parameters": {
+        "jsCode": "function normalizeQuery(query) {\n  try {\n    if (typeof query === \"string\") return JSON.parse(query);\n    if (Array.isArray(query)) return query.map(i => i.json ?? i);\n    if (query && typeof query === \"object\") {\n      if (query.json) return [query.json];\n      return [query];\n    }\n    throw new Error(\"Unsupported query type\");\n  } catch (e) {\n    throw new Error(\"Invalid query format: \" + e.message);\n  }\n}\n\nfunction mean(arr) {\n  if (!arr || !arr.length) return 0;\n  return arr.reduce((a, b) => a + b, 0) / arr.length;\n}\n\nfunction groupBy(arr, key) {\n  return arr.reduce((acc, item) => {\n    const k = item[key] ?? \"Unknown\";\n    if (!acc[k]) acc[k] = [];\n    acc[k].push(item);\n    return acc;\n  }, {});\n}\n\ntry {\n  const data = normalizeQuery(query);\n\n  if (!Array.isArray(data) || !data.length) {\n    return JSON.stringify({ error: \"Input must be a non-empty array.\" });\n  }\n\n  // --- LOGISTICS OVERVIEW ---\n  const shippingTimes = data.map(i => Number(i[\"shipping_times\"] ?? 0));\n  const shippingCosts = data.map(i => Number(i[\"shipping_costs\"] ?? 0));\n\n  const onTimeFlags = data.map(i => {\n    const lt = Number(i[\"lead_times\"] ?? 0);\n    const st = Number(i[\"shipping_times\"] ?? 0);\n    return st && lt ? (st <= lt ? 1 : 0) : 0;\n  });\n\n  const avgShippingTime = mean(shippingTimes);\n  const avgShippingCost = mean(shippingCosts);\n  const onTimeRate = (mean(onTimeFlags) * 100).toFixed(1) + \"%\";\n\n  const logistics_overview = {\n    total_shipments: Number(data.length),\n    avg_shipping_time: Number(avgShippingTime.toFixed(2)),\n    avg_shipping_cost: Number(avgShippingCost.toFixed(2)),\n    on_time_delivery_rate: onTimeRate\n  };\n\n  // --- CARRIER PERFORMANCE ---\n  const carriers = groupBy(data, \"shipping_carriers\");\n\n  const carrier_performance = Object.keys(carriers).map(carrier => {\n    const arr = carriers[carrier];\n\n    const avg_time = mean(arr.map(i => Number(i[\"shipping_times\"] ?? 0)));\n    const avg_cost = mean(arr.map(i => Number(i[\"shipping_costs\"] ?? 0)));\n    const volume = arr.reduce(\n      (s, i) => s + Number(i[\"number_of_products_sold\"] ?? 0),\n      0\n    );\n\n    const reliability = mean(\n      arr.map(i =>\n        Number(i[\"shipping_times\"] ?? 0) <= Number(i[\"lead_times\"] ?? 0)\n          ? 1\n          : 0\n      )\n    );\n\n    return {\n      carrier: String(carrier),\n      avg_time: Number(avg_time.toFixed(2)),\n      avg_cost: Number(avg_cost.toFixed(2)),\n      reliability_score: Number((reliability * 100).toFixed(1)),\n      volume: Number(volume)\n    };\n  });\n\n  // --- ROUTE ANALYSIS ---\n  const routes = groupBy(data, \"routes\");\n\n  const route_analysis = Object.keys(routes).map(route => {\n    const arr = routes[route];\n\n    const avg_time = mean(arr.map(i => Number(i[\"shipping_times\"] ?? 0)));\n    const avg_cost = mean(arr.map(i => Number(i[\"shipping_costs\"] ?? 0)));\n    const eff = avg_time > 0 ? (1 / avg_time) * 100 : 0;\n\n    return {\n      route: String(route),\n      avg_cost: Number(avg_cost.toFixed(2)),\n      avg_time: Number(avg_time.toFixed(2)),\n      efficiency_score: Number(eff.toFixed(2))\n    };\n  });\n\n  // --- TRANSPORTATION MODES ---\n  const modes = groupBy(data, \"transportation_modes\");\n\n  const transportation_mode_comparison = Object.keys(modes).map(mode => {\n    const arr = modes[mode];\n\n    const avg_time = mean(arr.map(i => Number(i[\"shipping_times\"] ?? 0)));\n    const avg_cost = mean(arr.map(i => Number(i[\"shipping_costs\"] ?? 0)));\n\n    return {\n      mode: String(mode),\n      cost_efficiency:\n        avg_cost < logistics_overview.avg_shipping_cost ? \"good\" : \"poor\",\n      time_efficiency:\n        avg_time < logistics_overview.avg_shipping_time ? \"fast\" : \"slow\",\n      usage_rate: ((arr.length / data.length) * 100).toFixed(1) + \"%\"\n    };\n  });\n\n  // --- BOTTLENECKS ---\n  const bottlenecks = [];\n\n  const onTimeNum = Number(\n    logistics_overview.on_time_delivery_rate.replace(\"%\", \"\")\n  );\n  if (onTimeNum < 85) {\n    bottlenecks.push(\"Overall on-time delivery rate is below 85%.\");\n  }\n\n  carrier_performance.forEach(c => {\n    if (c.reliability_score < 80) {\n      bottlenecks.push(\n        `Carrier ${c.carrier} has low reliability (${c.reliability_score}%).`\n      );\n    }\n  });\n\n  // --- RECOMMENDATIONS ---\n  const recommendations = [\n    \"Investigate low-reliability carriers and redistribute volume.\",\n    \"Use routes with higher efficiency scores for urgent shipments.\",\n    \"Review transportation modes with poor cost or time efficiency.\"\n  ];\n\n  // FINAL OUTPUT\n  const output = {\n    logistics_overview,\n    carrier_performance,\n    route_analysis,\n    transportation_mode_comparison,\n    bottlenecks,\n    recommendations\n  };\n\n  return JSON.stringify(output);\n\n} catch (err) {\n  return JSON.stringify({ error: err.message });\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.2,
+      "position": [
+        1700,
+        2440
+      ],
+      "id": "6f30f4b7-df03-4ae9-8f13-c63dd5e2920c",
+      "name": "Code Tool4"
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        2860,
+        1940
+      ],
+      "id": "5e0f00f3-1d88-43c3-9980-276cc8361aeb",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk",
+          "mode": "list",
+          "cachedResultName": "AI Agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1135009217,
+          "mode": "list",
+          "cachedResultName": "Supply_Chain_Tracking",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit#gid=1135009217"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "total_shipments": "={{ $json.output.logistics_overview.total_shipments }}",
+            "avg_shipping_time": "={{ $json.output.logistics_overview.avg_shipping_time }}",
+            "avg_shipping_cost": "={{ $json.output.logistics_overview.avg_shipping_cost }}",
+            "on_time_delivery_rate": "={{ $json.output.logistics_overview.on_time_delivery_rate }}",
+            "carrier": "={{ $json.output.carrier_performance[0].carrier }}",
+            "avg_time": "={{ $json.output.route_analysis[0].avg_time }}",
+            "avg_cost": "={{ $json.output.route_analysis[0].avg_cost }}",
+            "reliability_score": "={{ $json.output.carrier_performance[0].reliability_score }}",
+            "volume": "={{ $json.output.carrier_performance[0].volume }}",
+            "route": "={{ $json.output.route_analysis[0].route }}",
+            "efficiency_score": "={{ $json.output.route_analysis[0].efficiency_score }}",
+            "mode": "={{ $json.output.transportation_mode_comparison[0].mode }}",
+            "cost_efficiency": "={{ $json.output.transportation_mode_comparison[0].cost_efficiency }}",
+            "time_efficiency": "={{ $json.output.transportation_mode_comparison[0].time_efficiency }}",
+            "usage_rate": "={{ $json.output.transportation_mode_comparison[0].usage_rate }}",
+            "bottlenecks": "={{ $json.output.bottlenecks }}",
+            "recommendations": "={{ $json.output.recommendations }}"
+          },
+          "matchingColumns": [
+            "total_shipments"
+          ],
+          "schema": [
+            {
+              "id": "total_shipments",
+              "displayName": "total_shipments",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "avg_shipping_time",
+              "displayName": "avg_shipping_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "avg_shipping_cost",
+              "displayName": "avg_shipping_cost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "on_time_delivery_rate",
+              "displayName": "on_time_delivery_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "carrier",
+              "displayName": "carrier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "avg_time",
+              "displayName": "avg_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "avg_cost",
+              "displayName": "avg_cost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reliability_score",
+              "displayName": "reliability_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "volume",
+              "displayName": "volume",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "route",
+              "displayName": "route",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "avg_cost",
+              "displayName": "avg_cost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "avg_time",
+              "displayName": "avg_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "efficiency_score",
+              "displayName": "efficiency_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "mode",
+              "displayName": "mode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cost_efficiency",
+              "displayName": "cost_efficiency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "time_efficiency",
+              "displayName": "time_efficiency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "usage_rate",
+              "displayName": "usage_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "bottlenecks",
+              "displayName": "bottlenecks",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "recommendations",
+              "displayName": "recommendations",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2020,
+        2320
+      ],
+      "id": "52a2cb5d-702c-482e-8fd8-ba0236af0435",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleApi": {
+          "id": "k0Yo1kbGyRpC5HYu",
+          "name": "Google Service Account account 75"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk",
+          "mode": "list",
+          "cachedResultName": "AI Agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1288053363,
+          "mode": "list",
+          "cachedResultName": "Supplier_Evaluation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit#gid=1288053363"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "supplier_scorecard": "={{ $json.output.supplier_scorecard }}",
+            "avg_defect_rate": "={{ $json.output.quality_analysis.avg_defect_rate }}",
+            "pass_rate": "={{ $json.output.quality_analysis.pass_rate }}",
+            "best_supplier": "={{ $json.output.quality_analysis.best_supplier }}",
+            "worst_supplier": "={{ $json.output.quality_analysis.worst_supplier }}",
+            "avg_manufacturing_cost": "={{ $json.output.cost_analysis.avg_manufacturing_cost }}",
+            "most_competitive": "={{ $json.output.cost_analysis.most_competitive }}",
+            "cost_range": "={{ $json.output.cost_analysis.cost_range }}",
+            "avg_lead_time": "={{ $json.output.reliability_analysis.avg_lead_time }}",
+            "most_reliable": "={{ $json.output.reliability_analysis.most_reliable }}",
+            "high_risk_suppliers": "={{ $json.output.reliability_analysis.high_risk_suppliers }}",
+            "recommendations": "={{ $json.output.recommendations }}"
+          },
+          "matchingColumns": [
+            "supplier_scorecard"
+          ],
+          "schema": [
+            {
+              "id": "supplier_scorecard",
+              "displayName": "supplier_scorecard",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "avg_defect_rate",
+              "displayName": "avg_defect_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pass_rate",
+              "displayName": "pass_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "best_supplier",
+              "displayName": "best_supplier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "worst_supplier",
+              "displayName": "worst_supplier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "avg_manufacturing_cost",
+              "displayName": "avg_manufacturing_cost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "most_competitive",
+              "displayName": "most_competitive",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cost_range",
+              "displayName": "cost_range",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "avg_lead_time",
+              "displayName": "avg_lead_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "most_reliable",
+              "displayName": "most_reliable",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "high_risk_suppliers",
+              "displayName": "high_risk_suppliers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "recommendations",
+              "displayName": "recommendations",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2020,
+        2720
+      ],
+      "id": "c9b0f60e-b7b4-451e-bb3b-fa8da32da3f2",
+      "name": "Google Sheets8",
+      "credentials": {
+        "googleApi": {
+          "id": "k0Yo1kbGyRpC5HYu",
+          "name": "Google Service Account account 75"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"TieuDe\": \"string\",\n  \"NoiDungEmail\": \"string\",\n  \"NgayTaoBaoCao\": \"string\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1520,
+        800
+      ],
+      "id": "37230609-1dd4-4867-b45e-305bd64fa377",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        800
+      ],
+      "id": "2baa7689-1de9-464c-8efe-38ddf9363b82",
+      "name": "Google Gemini Chat Model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "0RVwycsAs9IMCfRS",
+          "name": "Google Gemini(PaLM) Api account 99"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.result }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Bạn là chuyên gia phân tích chuỗi cung ứng cấp cao.\n\nDữ liệu tôi cung cấp bao gồm 4 module: Demand, Inventory, Logistics, Supplier.\nHãy đọc kỹ dữ liệu và viết giúp tôi một email báo cáo gửi CEO theo đúng format:\n\n---\nKính gửi Anh/Chị [Tên CEO],\n\n1. **Tóm tắt điều hành (Executive Summary):**\n- Tóm tắt 3–5 điểm nổi bật nhất từ 4 module (Demand, Inventory, Logistics, Supplier).\n\n2. **Phân tích chi tiết theo từng module:**\n**A. Demand Forecasting**\n- …\n\n**B. Inventory Optimization**\n- …\n\n**C. Logistics & Transportation**\n- …\n\n**D. Supplier Evaluation**\n- …\n\n3. **Rủi ro & cảnh báo chính:**\n- …\n\n4. **Kiến nghị & hành động ưu tiên:**\n- …\n\n5. **Ngày tạo báo cáo: {{ $now.toFormat(\"dd/MM/yyyy\") }}** \n\nTrân trọng,\nChuyên gia Phân tích Chuỗi cung ứng.\n---\n\nHãy đảm bảo văn phong trang trọng – logic – chia thành từng mục rõ ràng – dễ gửi CEO.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1320,
+        580
+      ],
+      "id": "4664d7c9-2fd8-4aec-932d-c568329bf91a",
+      "name": "content email"
+    },
+    {
+      "parameters": {
+        "sendTo": "congqt23411@st.uel.edu.vn",
+        "subject": "={{ $json.output.TieuDe }}",
+        "emailType": "text",
+        "message": "={{ $json.output.NoiDungEmail }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1700,
+        580
+      ],
+      "id": "a38246b0-cb27-4836-8fd5-ece459367d27",
+      "name": "Gmail",
+      "webhookId": "3302f292-25f6-4921-a2a0-d6134f8fb265",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vNsTviJJG5BphQza",
+          "name": "Gmail account 42"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "SEND EMAIL ",
+        "height": 480,
+        "width": 1080,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        520
+      ],
+      "id": "e15f0241-2ff7-42d5-8142-915f0f572a24",
+      "name": "Note - Demand Forecasting1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Dưới đây là dữ liệu đầu vào cần phân tích:\n\n{{ $json.data.flat_list_string }}\n\nHãy thực hiện nhiệm vụ của Demand Forecasting Agent theo đúng QUY TẮC SAU:\n\n1. Bạn KHÔNG ĐƯỢC tự thực hiện bất kỳ phép tính số học nào.\n   - Không được tự tính forecast\n   - Không được tự tính trend\n   - Không được tự tính trung bình\n   - Không được tự tính confidence\n   - Không được tự phân loại high/low demand\n\n2. MỌI phép tính bắt buộc phải được thực hiện bởi Code Tool1.\n\n3. Khi cần tính toán, bạn PHẢI gọi Code Tool1 với payload CHÍNH XÁC như sau:\n   {\n      \"query\": {{ $json.data.flat_list_string }}\n   }\n\n4. Sau khi Code Tool1 trả về JSON:\n   - Giữ NGUYÊN toàn bộ số liệu (không được thay đổi bất kỳ giá trị nào)\n   - Chỉ được thêm một trường:\n        \"recommendations\": \"<viết khuyến nghị tiếng Việt>\"\n   - Không được thêm, bớt, sửa dữ liệu khác.\n\n5. Bạn phải trả kết quả cuối cùng ở dạng:\n   **JSON STRING DUY NHẤT**\n   - Không được trả object trực tiếp\n   - Không được viết thêm bất kỳ văn bản nào ngoài JSON\n\n6. Nếu Code Tool1 trả về lỗi:\n   - Bạn PHẢI trả về JSON STRING dạng:\n     {\"error\": \"<nội dung lỗi từ tool>\"}\n\nHãy gọi Code Tool1 ngay lập tức để thực hiện tính toán.\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Bạn là Demand Forecasting Agent – orchestrator chịu trách nhiệm gọi Code Tool1 để tính toán.\n\nQUY TẮC BẮT BUỘC:\n\n1. Bạn KHÔNG ĐƯỢC thực hiện bất kỳ phép tính nào bằng suy luận.\n   - KHÔNG được tự tính forecast\n   - KHÔNG được tự tính trend\n   - KHÔNG được tự tính confidence\n   - KHÔNG được tự phân loại high/low demand\n   - KHÔNG được tự sinh product_analysis\n   - KHÔNG được tự tạo forecast_summary\n\n2. MỌI TÍNH TOÁN PHẢI ĐƯỢC THỰC THI BỞI:\n   **Code Tool1**\n\n3. Khi cần số liệu, bạn PHẢI gọi Code Tool1 với payload CHÍNH XÁC dạng:\n   {\n     \"query\": {{ $json.data.flat_list_string }}\n\n4. Sau khi nhận JSON từ Code Tool1:\n   - Bạn GIỮ NGUYÊN mọi field do Code Tool1 trả về\n   - Bạn chỉ được THÊM DUY NHẤT:\n       \"recommendations\": \"<khuyến nghị tiếng Việt>\"\n\n5. Output cuối cùng bạn trả về:\n   - PHẢI LÀ **JSON STRING DUY NHẤT**\n   - KHÔNG được trả object\n   - KHÔNG được viết thêm chữ nào ngoài JSON\n\n6. Nếu tool trả lỗi:\n   Bạn phải trả về JSON STRING:\n   {\"error\": \"<nội dung lỗi>\"}\n\n7. Bạn phải luôn luôn thực hiện quy trình:\n   - Nhận input\n   - Gọi Code Tool1\n   - Nhận JSON kết quả\n   - Chèn thêm recommendations\n   - Trả về JSON string\n   - KHÔNG được bỏ qua bước gọi tool\n\n8. Nếu thiếu dữ liệu hoặc format sai → vẫn phải gọi tool.\n\n\nYÊU CẦU ĐẦU RA:\n- Phân tích theo product_type\n- Dự báo nhu cầu 30 ngày\n- Nhóm sản phẩm tăng/giảm\n- High/low demand\n- Chèn recommendations tự viết\n\nDỮ LIỆU:\n{{ $json.data.flat_list_string }}\n\nHãy gọi Code Tool1 NGAY LẬP TỨC để thực hiện tính toán.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1540,
+        1320
+      ],
+      "id": "b31adb84-9b6a-4f57-ad90-6fc4c0befa29",
+      "name": "Demand Forecasting Agent1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// =====================\n// Utility functions\n// =====================\n\nfunction mean(arr) {\n  if (!arr || !arr.length) return 0;\n  return arr.reduce((a, b) => a + b, 0) / arr.length;\n}\n\nfunction std(arr) {\n  if (!arr || !arr.length) return 0;\n  const m = mean(arr);\n  return Math.sqrt(mean(arr.map(x => (x - m) ** 2)));\n}\n\nfunction confidence(arr) {\n  if (!arr || !arr.length) return \"low\";\n  const m = mean(arr);\n  if (m === 0 || isNaN(m)) return \"low\";\n  const cv = std(arr) / m;\n  if (cv < 0.3) return \"high\";\n  if (cv < 0.6) return \"medium\";\n  return \"low\";\n}\n\n// =====================\n// FIX NORMALIZER FOR YOUR WORKFLOW\n// =====================\n\nfunction normalizeQuery(q) {\n  if (!q) return [];\n\n  // CASE 1: q là STRING chứa JSON\n  if (typeof q === \"string\") {\n    try {\n      const parsed = JSON.parse(q);\n\n      // dạng { query: [...] }\n      if (parsed.query && Array.isArray(parsed.query)) {\n        return parsed.query;\n      }\n\n      // dạng [...]\n      if (Array.isArray(parsed)) return parsed;\n\n      return [];\n    } catch (e) {\n      return [];\n    }\n  }\n\n  // CASE 2: object có field query: [...]\n  if (typeof q === \"object\") {\n    if (Array.isArray(q.query)) return q.query;\n    if (Array.isArray(q)) return q;\n  }\n\n  return [];\n}\n\n// =====================\n// Forecast per product type\n// =====================\n\nfunction forecastByType(df) {\n  const groups = {};\n  const output = [];\n\n  df.forEach(item => {\n    const type = item.product_type || \"unknown\";\n    if (!groups[type]) groups[type] = [];\n    groups[type].push(item);\n  });\n\n  for (const type in groups) {\n    const items = groups[type];\n    const sales = items.map(x => Number(x.number_of_products_sold) || 0);\n\n    const avg = mean(sales);\n    const forecast30 = avg * 30;\n\n    let trend = \"stable\";\n    if (sales.length >= 2) {\n      trend = sales[sales.length - 1] > sales[0] ? \"increasing\" : \"decreasing\";\n    }\n\n    output.push({\n      product_type: type,\n      current_avg_sales: Number(avg.toFixed(2)),\n      forecasted_demand: Number(forecast30.toFixed(2)),\n      trend,\n      confidence: confidence(sales)\n    });\n  }\n\n  return output;\n}\n\n// =====================\n// High vs Low demand\n// =====================\n\nfunction splitHighLow(df) {\n  const sales = df.map(x => Number(x.number_of_products_sold) || 0);\n  const avg = mean(sales);\n\n  return {\n    high: [...new Set(df.filter(x => x.number_of_products_sold > avg).map(x => x.product_type))],\n    low: [...new Set(df.filter(x => x.number_of_products_sold <= avg).map(x => x.product_type))]\n  };\n}\n\n// =====================\n// Summary\n// =====================\n\nfunction summary(analysis) {\n  const total = analysis.reduce((s, x) => s + x.forecasted_demand, 0);\n  const inc = analysis.filter(x => x.trend === \"increasing\").length;\n  const dec = analysis.filter(x => x.trend === \"decreasing\").length;\n\n  let trend = \"stable\";\n  if (inc > dec) trend = \"increasing\";\n  else if (dec > inc) trend = \"decreasing\";\n\n  return {\n    next_30_days_demand: String(Math.round(total)),\n    confidence_level: \"medium\",\n    trend\n  };\n}\n\n// =====================\n// MAIN\n// =====================\n\ntry {\n  const df = normalizeQuery(query);\n\n  const analysis = forecastByType(df);\n  const { high, low } = splitHighLow(df);\n\n  const result = {\n    forecast_summary: summary(analysis),\n    product_analysis: analysis,\n    high_demand_products: high,\n    low_demand_products: low\n  };\n\n  return JSON.stringify(result);\n\n} catch (err) {\n  return JSON.stringify({ error: err.message });\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.2,
+      "position": [
+        1600,
+        1560
+      ],
+      "id": "f4ec2160-c3b5-4213-b7d4-4f155d8ef0ae",
+      "name": "Code Tool1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Webhook1').item.json.body.message.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Bạn là một AI Data Retrieval Agent, chuyên lấy dữ liệu CHÍNH XÁC từ Supabase thông qua tool được cung cấp trong flow.\n\nNhiệm vụ của bạn là:\n- Lấy dữ liệu từ bảng Supabase **duy nhất**: \"supply_chain_data\"\n- Truy vấn đúng các bản ghi mà người dùng yêu cầu\n- Trả về JSON chính xác, không suy luận, không bịa giá trị\n\n===========================\nQUY TẮC BẮT BUỘC PHẢI TUÂN THEO\n===========================\n\n1. Bạn CHỈ được truy cập dữ liệu thông qua tool “Supabase”.\n   - Mọi truy vấn bắt buộc phải dùng tool.\n   - Bạn tuyệt đối KHÔNG được trả lời nếu chưa gọi tool.\n\n2. Khi cần lấy SKU, bạn phải gọi tool Supabase với:\n   - Table: **\"supply_chain_data\"** (bắt buộc)\n   - Resource: Row\n   - Operation: Get Many\n   - Filter: áp dụng bộ lọc theo danh sách SKU user yêu cầu\n\n   Ví dụ tool call:\n\n   {\n     \"table\": \"supply_chain_data\",\n     \"operation\": \"Get Many\",\n     \"filter\": {\n        \"sku\": { \"in\": [\"SKU1\", \"SKU2\", ...] }\n     }\n   }\n\n3. Bạn KHÔNG BAO GIỜ được:\n   - Bịa dữ liệu\n   - Điền giá trị từ trí nhớ mô hình\n   - Suy đoán giá trị khi Supabase không trả về\n   - Tự tạo SKU nếu không tồn tại\n   - Trả lời dạng agent như “demand_forecasting_agent”, “analysis_agent”, v.v.\n\n4. Format TRẢ VỀ phải là JSON hợp lệ 100%:\n   - Không thêm mô tả\n   - Không thêm câu văn\n   - Không Markdown\n   - Không giải thích\n\n===========================\nFORMAT PHẢI TRẢ VỀ\n===========================\n\n**Nếu trả về 1 SKU → object JSON:**\n\n{\n  \"sku\": \"\",\n  \"product_type\": \"\",\n  \"price\": \"\",\n  \"availability\": \"\",\n  \"stock_levels\": \"\",\n  \"order_quantities\": \"\",\n  \"number_of_products_sold\": \"\",\n  \"revenue_generated\": \"\",\n  \"lead_times\": \"\",\n  \"production_volumes\": \"\",\n  \"manufacturing_lead_time\": \"\",\n  \"defect_rates\": \"\",\n  \"supplier_name\": \"\",\n  \"shipping_times\": \"\",\n  \"shipping_carriers\": \"\",\n  \"shipping_costs\": \"\",\n  \"transportation_modes\": \"\",\n  \"routes\": \"\",\n  \"location\": \"\"\n}\n\n**Nếu user yêu cầu nhiều SKU → trả JSON array:**\n\n[\n  { ... },\n  { ... },\n  ...\n]\n\n5. Nếu một SKU không tồn tại trong bảng **supply_chain_data**, bạn phải trả lỗi:\n{\n  \"error\": \"SKU không tồn tại trong dữ liệu Supabase.\"\n}\n\n6. Nếu tool Supabase trả lỗi, bạn phải trả:\n{\n  \"error\": \"<thông báo lỗi từ Supabase>\"\n}\n\n7. Bạn LUÔN LUÔN phải gọi tool Supabase trước khi trả lời.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -220,
+        1380
+      ],
+      "id": "6de8cb6b-9df5-4a8a-86de-142f284e36c2",
+      "name": "AI Data Retrieval Agent"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"forecast_summary\": {\n    \"next_30_days_demand\": \"4500\",\n    \"confidence_level\": \"medium\",\n    \"trend\": \"increasing\"\n  },\n  \"product_analysis\": [\n    {\n      \"product_type\": \"skincare\",\n      \"current_avg_sales\": 150,\n      \"forecasted_demand\": 4500,\n      \"trend\": \"increasing\",\n      \"confidence\": \"high\"\n    },\n    {\n      \"product_type\": \"cosmetics\",\n      \"current_avg_sales\": 80,\n      \"forecasted_demand\": 2400,\n      \"trend\": \"stable\",\n      \"confidence\": \"medium\"\n    }\n  ],\n  \"recommendations\": [\n    \"Tăng sản lượng cho nhóm skincare do nhu cầu tăng mạnh.\",\n    \"Theo dõi thêm xu hướng nhóm cosmetics để điều chỉnh sản xuất hợp lý.\"\n  ],\n  \"high_demand_products\": [\n    \"skincare\"\n  ],\n  \"low_demand_products\": [\n    \"cosmetics\"\n  ]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1820,
+        1540
+      ],
+      "id": "aec6cc1f-3a38-4068-9f2a-e3b475eca1bb",
+      "name": "Demand Forecast Output1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        1540
+      ],
+      "id": "16f7ed37-5298-497a-956b-abb73b3198b7",
+      "name": "Gemini - Demand",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "0RVwycsAs9IMCfRS",
+          "name": "Google Gemini(PaLM) Api account 99"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const merged = $input.all();\n\n/**\n * Tìm object CHA có chứa key con.\n */\nfunction findParentWithKey(obj, key) {\n  if (!obj || typeof obj !== \"object\") return null;\n\n  for (const prop in obj) {\n    const value = obj[prop];\n\n    if (prop === key) {\n      // trả về object CHA chứa key\n      return obj;\n    }\n\n    if (typeof value === \"object\") {\n      const found = findParentWithKey(value, key);\n      if (found) return found;\n    }\n  }\n  return null;\n}\n\n// LẤY OBJECT CHA, KHÔNG MẤT FIELD\nconst demandParent    = findParentWithKey(merged, \"forecast_summary\")      || {};\nconst inventoryParent = findParentWithKey(merged, \"inventory_summary\")     || {};\nconst trackingParent  = findParentWithKey(merged, \"logistics_overview\")    || {};\nconst supplierParent  = findParentWithKey(merged, \"supplier_scorecard\")    || {};\n\n// unwrap .output nếu có\nfunction unwrap(o) {\n  return o?.output ? o.output : o;\n}\n\nreturn {\n  result: {\n    demand_forecasting: unwrap(demandParent),\n    inventory_optimization: unwrap(inventoryParent),\n    supply_chain_tracking: unwrap(trackingParent),\n    supplier_evaluation: unwrap(supplierParent)\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3840,
+        2900
+      ],
+      "id": "16d4befa-a373-49f9-9d79-6fba7e480575",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "jsCode": "let merged = [];\n\nif (Array.isArray(items)) {\n  merged = items.map(i => i.json ?? i);\n}\n\nreturn {\n  data: {\n    flat_list: merged,\n    flat_list_string: JSON.stringify(merged)\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        1380
+      ],
+      "id": "48e11ecb-4ad9-4218-9dc7-c379bd003ffe",
+      "name": "Code4"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://bot-api.zapps.me/bot1087819310551228737:RowcgFQhqoagqOAMiSgBwsJqTWkmdSLkwRnVdtKRZzJtSWNvsixBprqLBIuBPbUV/sendChatAction",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "={{ $json.body.message.from.id }}"
+            },
+            {
+              "name": "action",
+              "value": "=typing"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -620,
+        -940
+      ],
+      "id": "b9b8eab0-27c4-4e7c-903b-e443aefc0a86",
+      "name": "HTTP Request10"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://bot-api.zapps.me/bot1087819310551228737:RowcgFQhqoagqOAMiSgBwsJqTWkmdSLkwRnVdtKRZzJtSWNvsixBprqLBIuBPbUV/sendChatAction",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "={{ $json.body.message.from.id }}"
+            },
+            {
+              "name": "action",
+              "value": "=typing"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -400,
+        1380
+      ],
+      "id": "3675d240-ad0e-43d0-b7a9-7dee9a8db0d4",
+      "name": "HTTP Request12"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://bot-api.zapps.me/bot1087819310551228737:RowcgFQhqoagqOAMiSgBwsJqTWkmdSLkwRnVdtKRZzJtSWNvsixBprqLBIuBPbUV/sendChatAction",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "={{ $('Webhook').item.json.body.message.from.id }}"
+            },
+            {
+              "name": "action",
+              "value": "=typing"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        -920
+      ],
+      "id": "e66a775b-5e4f-483c-bb4a-5cc65c60eaa1",
+      "name": "HTTP Request11"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.Questions }}",
+        "options": {
+          "systemMessage": "Bạn là một AI chuyên phân tích dữ liệu chuỗi cung ứng trong ngành Fashion & Beauty (mỹ phẩm – trang điểm).\nBạn chỉ được phép sử dụng dữ liệu truy xuất từ Vector Store (context trả về từ Supabase) để trả lời câu hỏi.\nNếu thông tin cần thiết không có trong context, bạn phải trả lời đúng nguyên văn: \"Dữ liệu hiện không đủ để trả lời câu hỏi này.\"\n \nCẤU TRÚC DỮ LIỆU \nNhóm 1 – Sản phẩm & tồn kho\n- Product Type – Loại sản phẩm (không đơn vị)\n- SKU – Mã sản phẩm duy nhất (không đơn vị)\n- Price – Giá bán (VND/USD)\n- Availability – Mức sẵn có (số lượng có thể bán) (units)\n- Stock levels – Mức tồn kho (units)\n- Order quantities – Số lượng đã được đặt hàng (units)\n\nNhóm 2 – Bán hàng & khách hàng\n- Number of products sold – Tổng số lượng đã bán (units)\n- Revenue generated – Tổng doanh thu (VND/USD)\n- Customer demographics – Nhân khẩu học khách hàng (không đơn vị)\n\nNhóm 3 – Sản xuất\n- Lead times – Thời gian hoàn thành đơn (days)\n- Production volumes – Sản lượng (units)\n- Manufacturing lead time – Thời gian sản xuất (days)\n- Manufacturing costs - Chi phí sản xuất (VND/USD)\n\nNhóm 4 – Chất lượng & nhà cung cấp\n- Defect rates – Tỷ lệ lỗi (VND/USD)\n- Inspection results – Kết quả kiểm định (Pass/Fail/Pending)\n- Supplier name – Tên nhà cung cấp (không đơn vị)\n\nNhóm 5 – Vận chuyển & Logistics\n- Shipping times – Thời gian giao hàng (days)\n- Shipping carriers – Nhà vận chuyển (không đơn vị)\n- Shipping costs – Chi phí vận chuyển (VND/USD)\n- Transportation modes – Phương thức vận tải (road, sea, air)\n- Routes – Tuyến đường vận chuyển (không đơn vị)\n- Costs – Chi phí logistics khác (VND/USD)\n- Location – Vị trí kho / điểm giao hàng (không đơn vị)\n\nQuy tắc trả lời\n- Phải truy vấn tất cả dữ liệu trước khi trả lời và luôn luôn dựa trên dữ liệu trong context truy xuất được.\n- Phải truy xuất đúng, không được suy đoán, không được bịa thêm giá trị, không được “giả sử”.\n- Nếu có tính toán, phải: Viết rõ công thức (bằng lời hoặc ký hiệu đơn giản). Trình bày các bước chính và kết quả cuối cùng.\n- Có thể (nhưng không bắt buộc) trình bày theo cấu trúc: Kết luận chính, Phân tích chi tiết dựa trên dữ liệu, Khuyến nghị cho doanh nghiệp\n- Trả lời bằng ngôn ngữ tự nhiên, dễ đọc, mạch lạc, phù hợp người dùng business.\n- Không cần quá máy móc theo cấu trúc cố định, miễn là rõ ràng và dựa trên dữ liệu.\n- Văn bản trả lời không được vượt quá 1800 ký tự\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1440,
+        -920
+      ],
+      "id": "a7415878-fa84-45cc-8460-ba5c7570db59",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://bot-api.zapps.me/bot1087819310551228737:RowcgFQhqoagqOAMiSgBwsJqTWkmdSLkwRnVdtKRZzJtSWNvsixBprqLBIuBPbUV/setWebhook",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://ai-agent.nocoai.vn/webhook-test/38fd75f8-aee8-4b8d-8807-a4adfa58f563"
+            },
+            {
+              "name": "secret_token",
+              "value": "18022005"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -700,
+        -520
+      ],
+      "id": "324fb2b6-148f-424a-9e8d-9c25c8542ae1",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk",
+          "mode": "list",
+          "cachedResultName": "AI Agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2078512498,
+          "mode": "list",
+          "cachedResultName": "Mail",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yPXHmcndYUSGIxLmVAAgdBoC7AlRGi4jAfFbawWSCgk/edit#gid=2078512498"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Ngày tạo": "={{ $('content email').item.json.output.NgayTaoBaoCao }}",
+            "Tiêu đề email": "={{ $('content email').item.json.output.TieuDe }}",
+            "Nội dung email": "={{ $('content email').item.json.output.NoiDungEmail }}"
+          },
+          "matchingColumns": [
+            "Ngày tạo"
+          ],
+          "schema": [
+            {
+              "id": "Tiêu đề email",
+              "displayName": "Tiêu đề email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nội dung email",
+              "displayName": "Nội dung email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ngày tạo",
+              "displayName": "Ngày tạo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1920,
+        580
+      ],
+      "id": "35b3585a-1faf-4cdf-bf61-a82158359ab3",
+      "name": "Update status",
+      "credentials": {
+        "googleApi": {
+          "id": "k0Yo1kbGyRpC5HYu",
+          "name": "Google Service Account account 75"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Giai đoạn 2 - xây dựng workflow tự động hoá AI trong SCM",
+        "height": 2940,
+        "width": 4960,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        140
+      ],
+      "id": "52a71428-f9c6-45c0-86f4-ab4cf5ca538d",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Giai đoạn 1 - xây dựng kho tri thức và chatbot",
+        "height": 1340,
+        "width": 4960,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        -1320
+      ],
+      "id": "3169f6fc-e0fd-48eb-b247-5126ca9b81a4",
+      "name": "Sticky Note4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Postgres Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store2",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets11": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini3": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "content email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Inventory Optimization Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Supply Chain Tracking Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Supplier Evaluation Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Demand Forecasting Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supplier Evaluation Output": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Supplier Evaluation Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Supplier": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Supplier Evaluation Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supply Chain Tracking Output": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Supply Chain Tracking Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Tracking": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Supply Chain Tracking Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inventory Optimization Output": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Inventory Optimization Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Inventory": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Inventory Optimization Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inventory Optimization Agent": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Supply Chain Tracking Agent": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Supplier Evaluation Agent": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets8",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Google Sheets4": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets5": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets6": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets7": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Data Retrieval Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Data Retrieval Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Tool2": {
+      "ai_tool": [
+        [
+          {
+            "node": "Inventory Optimization Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        []
+      ]
+    },
+    "Code Tool3": {
+      "ai_tool": [
+        [
+          {
+            "node": "Supplier Evaluation Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Tool4": {
+      "ai_tool": [
+        [
+          {
+            "node": "Supply Chain Tracking Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        []
+      ]
+    },
+    "Google Sheets8": {
+      "main": [
+        []
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "content email",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "content email",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "content email": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Update status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Tool1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Demand Forecasting Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Demand Forecasting Agent1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Data Retrieval Agent": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Demand Forecast Output1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Demand Forecasting Agent1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Demand": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Demand Forecasting Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request10": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request12": {
+      "main": [
+        [
+          {
+            "node": "AI Data Retrieval Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request11": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update status": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ca3623ec-3f01-41f0-852d-99375af6c233",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "83627dbbca1562c3d577f758f361e11e87591e23c8e35d31c17efff35f81f9c1"
+  },
+  "id": "TD0Zoqcy112h35Sz",
+  "tags": []
+}
